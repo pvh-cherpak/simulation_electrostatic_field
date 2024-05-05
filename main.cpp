@@ -36,19 +36,19 @@ int main()
 	View interfase_view = window.getDefaultView();
 
 	Font TimesNewRoman;
-	if (!TimesNewRoman.loadFromFile("TimesNewROman.ttf"))
+	if (!TimesNewRoman.loadFromFile("fonts/TimesNewROman.ttf"))
 		cout << "error in load font TimesNewRoman" << endl;
 
 	Font Arial;
-	if (!Arial.loadFromFile("arial.ttf"))
+	if (!Arial.loadFromFile("fonts/arial.ttf"))
 		cout << "error in load font Arial" << endl;
 
 	Font Sans;
-	if (!Sans.loadFromFile("Comic Sans MS.ttf"))
+	if (!Sans.loadFromFile("fonts/Comic Sans MS.ttf"))
 		cout << "error in load font Comic Sans MS" << endl;
 
 	Texture settings_1;
-	if (!settings_1.loadFromFile("settings_1.png"))
+	if (!settings_1.loadFromFile("icons/settings_1.png"))
 	{
 		cout << "петрович мы обосрались текстура не грузиться" << endl;
 	}
@@ -286,32 +286,32 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 	window.setKeyRepeatEnabled(true);
 
 	Texture texture_exit_selected;
-	if (!texture_exit_selected.loadFromFile("exit.png"))
+	if (!texture_exit_selected.loadFromFile("icons/exit.png"))
 	{
 		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
 	}
 	Texture texture_FAQ_selected;
-	if (!texture_FAQ_selected.loadFromFile("FAQ.png"))
+	if (!texture_FAQ_selected.loadFromFile("icons/FAQ.png"))
 	{
 		// error...
 	}
 	Texture texture_exit_dark;
-	if (!texture_exit_dark.loadFromFile("desaturate-exit.png"))
+	if (!texture_exit_dark.loadFromFile("icons/desaturate-exit.png"))
 	{
 		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
 	}
 	Texture texture_FAQ_dark;
-	if (!texture_FAQ_dark.loadFromFile("desaturate-FAQ.png"))
+	if (!texture_FAQ_dark.loadFromFile("icons/desaturate-FAQ.png"))
 	{
 		// error...
 	}
 	Texture texture_exit_light;
-	if (!texture_exit_light.loadFromFile("black-exit.png"))
+	if (!texture_exit_light.loadFromFile("icons/black-exit.png"))
 	{
 		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
 	}
 	Texture texture_FAQ_light;
-	if (!texture_FAQ_light.loadFromFile("black-FAQ.png"))
+	if (!texture_FAQ_light.loadFromFile("icons/black-FAQ.png"))
 	{
 		// error...
 	}
@@ -471,7 +471,7 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 	exit_button.setPosition({ 1000,50 });
 
 	Texture github_texture;
-	if (!github_texture.loadFromFile("github.png"))
+	if (!github_texture.loadFromFile("icons/github.png"))
 	{
 		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
 	}
