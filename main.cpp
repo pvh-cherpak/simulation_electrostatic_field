@@ -19,7 +19,7 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background, vector <int>&
 
 
 void FAQ_list(RenderWindow& window, Texture& texture_exit_selected, Texture& act_texture_exit , Color background,
-	 Color text_color, Font& font);
+	 Color text_color, Font& font, bool language_is_english);
 
 int main()
 {
@@ -37,20 +37,20 @@ int main()
 
 	Font TimesNewRoman;
 	if (!TimesNewRoman.loadFromFile("fonts/TimesNewROman.ttf"))
-		cout << "error in load font TimesNewRoman" << endl;
+		cout << L"error in load font TimesNewRoman" << endl;
 
 	Font Arial;
 	if (!Arial.loadFromFile("fonts/arial.ttf"))
-		cout << "error in load font Arial" << endl;
+		cout << L"error in load font Arial" << endl;
 
 	Font Sans;
 	if (!Sans.loadFromFile("fonts/Comic Sans MS.ttf"))
-		cout << "error in load font Comic Sans MS" << endl;
+		cout << L"error in load font Comic Sans MS" << endl;
 
 	Texture settings_1;
 	if (!settings_1.loadFromFile("icons/settings_1.png"))
 	{
-		cout << "петрович мы обосрались текстура не грузиться" << endl;
+		cout << L"error in load \"settings_1.png\" settings icon" << endl;
 	}
 	Button settings_button(settings_1, { 150, 150 });
 	settings_button.setPosition({ interfase_view.getSize().x - 75,75});
@@ -76,6 +76,19 @@ int main()
 	bool show_spot_inform = false;
 	bool standart_vies = false;
 	bool settings_in_focus = false;
+	bool language_is_english = true;
+
+	ifstream fin("settings.txt");
+	if (fin.is_open()) {
+		vector <int> changed_falgs(4);
+		for (int i = 0; i < changed_falgs.size(); i++)
+			fin>> changed_falgs[i];
+		number_color_style = changed_falgs[0];
+		standart_vies = changed_falgs[1];
+		show_marking_grid = changed_falgs[2];
+		language_is_english = changed_falgs[3];
+		change_color_style(number_color_style, background);
+	}
  
 	//объявление всяких конвертирующих коэффициентов
 	double step_grid_M = 0.5;//шаг сетки в метрах
@@ -84,6 +97,17 @@ int main()
 	double size_zar = 10;
 	int number_change_zarad = 0;
 	Vector2f position_spot_info = { 0,0 };
+
+	if (language_is_english) {
+		buttons_title = buttons_title_english;
+		spot_info_text = spot_info_english;
+		prefix = prefix_english;
+	}
+	else {
+		prefix = prefix_russian;
+		buttons_title = buttons_title_russian;
+		spot_info_text = spot_info_russian;
+	}
 
 
 	FPS fps;
@@ -102,8 +126,13 @@ int main()
 		while (window.pollEvent(event))
 		{
 			// Пользователь нажал на «крестик» и хочет закрыть окно?
-			if (event.type == Event::Closed)
+			if (event.type == Event::Closed) {
+				ofstream fout("settings.txt");
+				vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
+				for (int i = 0; i < changed_falgs.size(); i++)
+					fout << changed_falgs[i] << endl;
 				window.close();
+			}
 			if (event.type == Event::Resized)
 			{
 				// update the pole_view to the new size of the window
@@ -164,11 +193,12 @@ int main()
 					step_grid_M -= 0.1 * (step_grid_M > 0.1);
 				}
 				if (event.key.code == Keyboard::M) {
-					vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid };
+					vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
 					GUI_menu(window, Arial, background, changed_falgs);
 					number_color_style = changed_falgs[0];
 					standart_vies = changed_falgs[1];
 					show_marking_grid = changed_falgs[2];
+					language_is_english = changed_falgs[3];
 					change_color_style(number_color_style, background);
 				}
 				if (event.key.code == Keyboard::S) {
@@ -206,11 +236,12 @@ int main()
 					}
 					if (is_not_zarad) {
 						if (settings_in_focus) {
-							vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid };
+							vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
 							GUI_menu(window, Sans, background, changed_falgs);
 							number_color_style = changed_falgs[0];
 							standart_vies = changed_falgs[1];
 							show_marking_grid = changed_falgs[2];
+							language_is_english = changed_falgs[3];
 
 							window.setView(interfase_view);
 							if (settings_button.isMouseOver(window))
@@ -267,7 +298,7 @@ int main()
 		if (show_spot_inform)
 			draw_spot_information(window, pole_view, zoom,
 				convert_coords_to_pixelsF(position_spot_info, convert_P_to_M),
-				get_spot_information(position_spot_info, zarady, standart_vies), TimesNewRoman);
+				get_spot_information(position_spot_info, zarady, standart_vies, spot_info_text, prefix), TimesNewRoman);
 
 		// Отрисовка окна
 		window.display();
@@ -275,11 +306,7 @@ int main()
 	return 0;
 }
 
-vector <vector < vector<string>>> buttons_title = {
-	{{"Theme:"}, {"light","dark"}},
-	{{"number format:"}, {"International\nSystem\nof Units", "scientific\nformat"}},
-	{{"marking grid"},{"hide", "display.\nbinding\nis enabled"}}
-};
+
 
 void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, vector <int>& changed_falgs) {
 	window.setView(window.getDefaultView());
@@ -288,34 +315,35 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 	Texture texture_exit_selected;
 	if (!texture_exit_selected.loadFromFile("icons/exit.png"))
 	{
-		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
+		cout << "error in load exit.png" << endl;
 	}
 	Texture texture_FAQ_selected;
 	if (!texture_FAQ_selected.loadFromFile("icons/FAQ.png"))
 	{
-		// error...
+		cout << "error in load FAQ.png" << endl;
 	}
 	Texture texture_exit_dark;
 	if (!texture_exit_dark.loadFromFile("icons/desaturate-exit.png"))
 	{
-		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
+		cout << "error in load desaturate-exit.png" << endl;
 	}
 	Texture texture_FAQ_dark;
 	if (!texture_FAQ_dark.loadFromFile("icons/desaturate-FAQ.png"))
 	{
-		// error...
+		cout << "error in load desaturate-FAQ.png" << endl;
 	}
 	Texture texture_exit_light;
 	if (!texture_exit_light.loadFromFile("icons/black-exit.png"))
 	{
-		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
+		cout << "error in load black-exit.png" << endl;
 	}
 	Texture texture_FAQ_light;
 	if (!texture_FAQ_light.loadFromFile("icons/black-FAQ.png"))
 	{
-		// error...
+		cout << "error in load black-FAQ.png" << endl;
 	}
-	
+
+
 
 	vector <Button> buttons;
 	Vector2f size_btn = { 200, 125 };
@@ -375,8 +403,12 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 		//Event Loop:
 		while (window.pollEvent(event)) {
 			// Пользователь нажал на «крестик» и хочет закрыть окно?
-			if (event.type == Event::Closed)
+			if (event.type == Event::Closed) {
+				ofstream fout("settings.txt");
+				for (int i = 0; i < changed_falgs.size(); i++)
+					fout << changed_falgs[i] << endl;
 				window.close();
+			}
 			if (event.type == Event::KeyReleased)
 				if (event.key.code == Keyboard::Escape)
 					is_menu_not_closed = false;
@@ -404,7 +436,6 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 						if (changed_falgs[i] == buttons_title[i][1].size())
 							changed_falgs[i] = 0;
 						buttons[i].setTittleSring(buttons_title[i][1][changed_falgs[i]]);
-
 						switch (i)
 						{
 						case 0:
@@ -431,6 +462,18 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 							FAQ_button.setTexture(act_texture_FAQ);
 							exit_button.setTexture(act_texture_exit);
 							break;
+						case 3:
+							if (changed_falgs[3]) {
+								buttons_title = buttons_title_english;
+								spot_info_text = spot_info_english;
+								prefix = prefix_english;
+							}
+							else {
+								prefix = prefix_russian;
+								buttons_title = buttons_title_russian;
+								spot_info_text = spot_info_russian;
+							}
+							break;
 						default:
 							break;
 						}
@@ -441,7 +484,7 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 
 				if (FAQ_button.isMouseOver(window)) {
 					FAQ_list(window, texture_exit_selected, act_texture_exit, background_main_window,
-					text_color, font);
+					text_color, font, changed_falgs[3]);
 					if (exit_button.isMouseOver(window))
 						exit_button.setTexture(texture_exit_selected);
 					else
@@ -465,7 +508,7 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 
 
 void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& act_texture_exit, 
-	Color background, Color text_color, Font &font) {
+	Color background, Color text_color, Font &font, bool language_is_english) {
 	bool is_menu_not_closed = true;
 	Button exit_button(act_texture_exit, { 150, 150 });
 	exit_button.setPosition({ 1000,50 });
@@ -481,10 +524,15 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 	shape.setFillColor(Color::White);
 	shape.setPosition({ 984, 435 });
 
-	wstring TEXT_FAQ = L"Это FAQ\n";
-	TEXT_FAQ  = TEXT_FAQ + L"\nстрелочки - передвежение по полю\n" + L"S - смена темы\n" + L"pg up, pg down - зум\n" +
-		L"+ (который =) и _ (который -) - изменение маштаба сетки\n" + L"G - включение отключение сетки и привязки (к сетке)\n" +
-		L"Q - добавить заряд (в месте нахождения мышки\n" + L"ЛКМ - информация о точке поля\n";
+	wstring TEXT_FAQ = L"This FAQ\n";
+	if (!language_is_english)
+		TEXT_FAQ  = TEXT_FAQ + L"\nстрелочки - передвежение по полю\n" + L"S - смена темы\n" + L"pg up, pg down - зум\n" +
+			L"+ (который =) и _ (который -) - изменение маштаба сетки\n" + L"G - включение отключение сетки и привязки (к сетке)\n" +
+			L"Q - добавить заряд (в месте нахождения мышки\n" + L"ЛКМ - информация о точке поля\n";
+	else
+		TEXT_FAQ = TEXT_FAQ + L"\n arrows - moving across the field\n" + L"S - changing the theme\n" + L"pg up, pg down - zoom\n" +
+			L"+ (which =) and _ (which -) - changing the scale of the grid\n" + L"G - enabling disabling the grid and snapping (to the grid)\n" +
+			L"Q - add a charge (at the location of the mouse\n" + L"LMB - information about the point of the field \n";
 	wstring TEXT_FAQ_created = L"created by pvh_cherpak\n";
 
 	Text text_created;

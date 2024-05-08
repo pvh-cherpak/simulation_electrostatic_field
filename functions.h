@@ -8,8 +8,6 @@
 using namespace std;
 using namespace sf;
 
-vector <string> prefix = { "pico", "nano", "micro", "milli","","kilo","mega","giga","tera"};
-
 Vector2i convert_F_to_I(Vector2f p) {
 	int x = p.x;
 	int y = p.y;
@@ -124,7 +122,7 @@ vector <vector <Vector2f>> get_new_tensor_line_cadr(vector <Zarad> &zarady) {
 	return line_cadr;
 }
 
-string get_readable_numbers(double number, bool standard_view, int precis) {
+string get_readable_numbers(double number, bool standard_view, int precis,vector <wstring> &prefix ) {
 	int count_digit = 0;
 	if (abs(number) < 1) {
 		if (!standard_view)
@@ -175,7 +173,7 @@ string get_readable_numbers(double number, bool standard_view, int precis) {
 	return ans;
 }
 
-wstring get_spot_information(Vector2f coords, vector <Zarad>& zarady, bool standard_view) {
+wstring get_spot_information(Vector2f coords, vector <Zarad>& zarady, bool standard_view, vector <wstring> &strings, vector <wstring>& prefix) {
 	wstring information;
 
 	//вычесления напряжённости и потенциала поля в этой точке
@@ -191,12 +189,13 @@ wstring get_spot_information(Vector2f coords, vector <Zarad>& zarady, bool stand
 	intensity_field *= 9e9;
 	potential_field *= 9e9;
 
-	information += L"напряжённость: ";
-	information += get_readable_numbers(intensity_field, standard_view, 3) + L"Вольт/метр"+ L'\n';
-	information += L"потенциал: ";
-	information += get_readable_numbers(potential_field, standard_view, 3) + L"Вольт";
+	information += strings[0];
+	information += get_readable_numbers(intensity_field, standard_view, 3, prefix) + strings[1] + L'\n';
+	information += strings[2];
+	information += get_readable_numbers(potential_field, standard_view, 3, prefix) + strings[3];
 
 	return information;
 }
 
-
+vector <wstring> spot_info_text;
+vector <wstring> prefix;

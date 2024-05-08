@@ -15,8 +15,8 @@ public:
 		btnWidth = buttonSize.x;
 		btnHeight = buttonSize.y;
 
-		btn.height = buttonSize.x;
-		btn.width = buttonSize.y;
+		btn.height = buttonSize.y;
+		btn.width = buttonSize.x;
 
 		text.setString(btnText);
 		text.setCharacterSize(charSize);
@@ -76,6 +76,13 @@ public:
 		text.setPosition(xPos, yPos);
 	}
 
+	void setTittleSring(wstring new_tittle_string) {
+		text.setString(new_tittle_string);
+		float xPos = (button.getPosition().x + btnWidth / 2) - (text.getLocalBounds().width / 2);
+		float yPos = (button.getPosition().y + btnHeight / 2.3) - (text.getLocalBounds().height / 2);
+		text.setPosition(xPos, yPos);
+	}
+
 	string getTittleSring() {
 		return text.getString();
 	}
@@ -85,6 +92,13 @@ public:
 	}
 
 	void setDescriptionString(string new_description_string) {
+		description.setString(new_description_string);
+		float xPos = (button.getPosition().x) - (description.getLocalBounds().width) - 50;
+		float yPos = (button.getPosition().y + btnHeight / 2.2) - (description.getLocalBounds().height / 2);
+		description.setPosition(xPos, yPos);
+	}
+
+	void setDescriptionString(wstring new_description_string) {
 		description.setString(new_description_string);
 		float xPos = (button.getPosition().x) - (description.getLocalBounds().width) - 50;
 		float yPos = (button.getPosition().y + btnHeight / 2.2) - (description.getLocalBounds().height / 2);

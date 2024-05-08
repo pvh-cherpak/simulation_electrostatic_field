@@ -140,6 +140,24 @@
     <ClInclude Include="textbox.h" />
     <ClInclude Include="visual_function.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\1.jpg" />
+    <Image Include="icons\black-exit.png" />
+    <Image Include="icons\black-FAQ.png" />
+    <Image Include="icons\desaturate-exit.png" />
+    <Image Include="icons\desaturate-FAQ.png" />
+    <Image Include="icons\exit.png" />
+    <Image Include="icons\FAQ.png" />
+    <Image Include="icons\github.png" />
+    <Image Include="icons\settings_1.png" />
+    <Image Include="icons\settings_2.jpg" />
+    <Image Include="icons\settings_white.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\arial.ttf" />
+    <Font Include="fonts\Comic Sans MS.ttf" />
+    <Font Include="fonts\TimesNewRoman.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

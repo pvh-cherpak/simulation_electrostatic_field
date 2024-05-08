@@ -36,4 +36,44 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="icons\1.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\black-exit.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\black-FAQ.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\desaturate-exit.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\desaturate-FAQ.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\exit.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\FAQ.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\github.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\settings_1.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\settings_2.jpg">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+    <Image Include="icons\settings_white.png">
+      <Filter>Файлы ресурсов</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="fonts\arial.ttf" />
+    <Font Include="fonts\Comic Sans MS.ttf" />
+    <Font Include="fonts\TimesNewRoman.ttf" />
+  </ItemGroup>
 </Project>
