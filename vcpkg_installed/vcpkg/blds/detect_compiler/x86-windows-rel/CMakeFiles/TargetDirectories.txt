@@ -1,0 +1,2 @@
+C:/Users/pvh_cherpak/Desktop/программы/sim_electrostat_betta_v2/vcpkg_installed/vcpkg/blds/detect_compiler/x86-windows-rel/CMakeFiles/edit_cache.dir
+C:/Users/pvh_cherpak/Desktop/программы/sim_electrostat_betta_v2/vcpkg_installed/vcpkg/blds/detect_compiler/x86-windows-rel/CMakeFiles/rebuild_cache.dir

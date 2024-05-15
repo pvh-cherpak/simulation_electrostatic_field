@@ -1,9 +1,7 @@
-Package: fmt
-Version: 9.1.0
-Port-Version: 1
-Depends: vcpkg-cmake, vcpkg-cmake-config
+Package: freetype
+Feature: png
+Depends: libpng
 Architecture: x64-windows
 Multi-Arch: same
-Abi: dfffe6acacf2feae942c2b0f95d183a5449146c628133d578b6810ada3bac15e
-Description: Formatting library for C++. It can be used as a safe alternative to printf or as a fast alternative to IOStreams.
-Status: install ok half-installed
+Description: Support PNG compressed OpenType embedded bitmaps.
+Status: purge ok half-installed

@@ -1,7 +1,6 @@
-Package: freetype
-Feature: png
-Depends: libpng
+Package: vcpkg-cmake
+Version: 2022-12-22
 Architecture: x64-windows
 Multi-Arch: same
-Description: Support PNG compressed OpenType embedded bitmaps.
-Status: install ok installed
+Abi: 1f335098d830c929a945e7da15662d382f2f231f040b08b8ed389e94e31c1889
+Status: purge ok half-installed

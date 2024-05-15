@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/libpng-x64-windows-1.6.39#1-dbca1e65-f591-4763-a902-d4604b2cbc8f",
-  "name": "libpng:x64-windows@1.6.39#1 fb6ebeb89b6c0b77b8ffc6eda4d032810307c6690dfe9df1161f0c41c8a4eaa3",
+  "documentNamespace": "https://spdx.org/spdxdocs/libpng-x64-windows-1.6.39#1-8ed64d0c-3c84-41d9-959e-1b412fc8cccf",
+  "name": "libpng:x64-windows@1.6.39#1 4a3760447a833a9398696a0245f9ce3e482f955996aa6d178655c9ebcb48df85",
   "creationInfo": {
     "creators": [
-      "Tool: vcpkg-8a83681f921b10d86ae626fd833c253f4f8c355b"
+      "Tool: vcpkg-d6945642ee5c3076addd1a42c331bbf4cfc97457"
     ],
-    "created": "2024-02-16T17:33:47Z"
+    "created": "2024-05-14T08:51:26Z"
   },
   "relationships": [
     {
@@ -119,7 +119,7 @@
     {
       "name": "libpng:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "fb6ebeb89b6c0b77b8ffc6eda4d032810307c6690dfe9df1161f0c41c8a4eaa3",
+      "versionInfo": "4a3760447a833a9398696a0245f9ce3e482f955996aa6d178655c9ebcb48df85",
       "downloadLocation": "NONE",
       "licenseConcluded": "libpng-2.0",
       "licenseDeclared": "NOASSERTION",

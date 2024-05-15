@@ -1,7 +1,7 @@
-Package: stb
-Version: 2022-09-09
+Package: freetype
+Feature: brotli
+Depends: brotli
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 20a763e00c267d93d3d5944c22d47ff64d22ffa547f3f6b0f83d7fc39cf67d61
-Description: public domain header-only libraries
-Status: install ok half-installed
+Description: Support decompression of WOFF2 streams
+Status: purge ok half-installed

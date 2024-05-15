@@ -17,12 +17,12 @@ using namespace std;
 
 void GUI_menu(RenderWindow& window, Font& font, Color& background, vector <int>& changed_falgs);
 
-
 void FAQ_list(RenderWindow& window, Texture& texture_exit_selected, Texture& act_texture_exit , Color background,
 	 Color text_color, Font& font, bool language_is_english);
 
 int main()
 {
+	
 	_setmode(_fileno(stdout), _O_U16TEXT);
 	_setmode(_fileno(stdin), _O_U16TEXT);
 	_setmode(_fileno(stderr), _O_U16TEXT);
@@ -35,31 +35,36 @@ int main()
 	pole_view.setCenter(0, 0);
 	View interfase_view = window.getDefaultView();
 
+	/*Shader field_intensity;
+	if (!field_intensity.loadFromFile("field_intensity.vert", sf::Shader::Fragment))
+	{
+		wcout << L"error in load shader field_intensity" << endl;
+	}*/
+
 	Font TimesNewRoman;
 	if (!TimesNewRoman.loadFromFile("fonts/TimesNewROman.ttf"))
-		cout << L"error in load font TimesNewRoman" << endl;
+		wcout << L"error in load font TimesNewRoman" << endl;
 
 	Font Arial;
 	if (!Arial.loadFromFile("fonts/arial.ttf"))
-		cout << L"error in load font Arial" << endl;
+		wcout << L"error in load font Arial" << endl;
 
 	Font Sans;
 	if (!Sans.loadFromFile("fonts/Comic Sans MS.ttf"))
-		cout << L"error in load font Comic Sans MS" << endl;
+		wcout << L"error in load font Comic Sans MS" << endl;
 
 	Texture settings_1;
 	if (!settings_1.loadFromFile("icons/settings_1.png"))
 	{
-		cout << L"error in load \"settings_1.png\" settings icon" << endl;
+		wcout << L"error in load \"settings_1.png\" settings icon" << endl;
 	}
 	Button settings_button(settings_1, { 150, 150 });
 	settings_button.setPosition({ interfase_view.getSize().x - 75,75});
 	settings_button.set_center_in_center();
 
-	
+	Button menu_change_button("", {150.,150.}, 30, cl_menu_change_button, sf::Color::Black);
 	//массив зарядов
 	vector <Zarad> zarady;
-	zarady.push_back({ Vector2f(0,0),1e-8 });
 
 	//массив точек линий напряжённости
 	vector <vector <Vector2f>> tensor_line_cadr_points;
@@ -77,6 +82,10 @@ int main()
 	bool standart_vies = false;
 	bool settings_in_focus = false;
 	bool language_is_english = true;
+	bool menu_change_button_in_focus = false;
+	bool menu_change_is_open = false;
+	bool charges_anim = false;
+
 
 	ifstream fin("settings.txt");
 	if (fin.is_open()) {
@@ -102,18 +111,23 @@ int main()
 		buttons_title = buttons_title_english;
 		spot_info_text = spot_info_english;
 		prefix = prefix_english;
+		charge_text = charge_en;
 	}
 	else {
 		prefix = prefix_russian;
 		buttons_title = buttons_title_russian;
 		spot_info_text = spot_info_russian;
+		charge_text = charge_ru;
 	}
 
 
 	FPS fps;
 	change_color_style(number_color_style, background);
 
-	Clock clock;
+	Clock clock_setings_anim;
+	Clock clock_charges_move;
+	double time_charges_anim = 0.05;
+	double global_time = 0;
 
 	// Главный цикл приложения. Выполняется, пока открыто окно
 	while (window.isOpen())
@@ -171,12 +185,17 @@ int main()
 						convert_P_to_M, step_grid_M, show_marking_grid));
 					tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 				}
-				//if (event.key.code == Keyboard::D) {
-				//	cout << "left: " << pole_view.getViewport().left<<endl;
-				//	cout << "top: " << pole_view.getViewport().top << endl;
-				//	cout << "height: " << pole_view.getSize().x << endl;
-				//	cout << endl;
-				//}
+				if (event.key.code == Keyboard::D) {
+					charges_anim = !charges_anim;
+				}
+				if (event.key.code == Keyboard::C) {
+					zarady.clear();
+					global_time = 0;
+				}
+				if (event.key.code == Keyboard::L) {
+					if (number_change_zarad < zarady.size()) 
+						zarady[number_change_zarad].is_locked = !zarady[number_change_zarad].is_locked;
+				}
 				if (event.key.code == Keyboard::Delete)
 					if (number_change_zarad < zarady.size()) {
 						zarady.erase(zarady.begin() + number_change_zarad);
@@ -192,7 +211,7 @@ int main()
 				if (event.key.code == Keyboard::Hyphen) {
 					step_grid_M -= 0.1 * (step_grid_M > 0.1);
 				}
-				if (event.key.code == Keyboard::M) {
+				if (event.key.code == Keyboard::Escape) {
 					vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
 					GUI_menu(window, Arial, background, changed_falgs);
 					number_color_style = changed_falgs[0];
@@ -209,6 +228,25 @@ int main()
 				}
 				if (event.key.code == Keyboard::V)
 					standart_vies = !standart_vies;
+
+				if (event.key.code == Keyboard::RBracket)
+					if (number_change_zarad < zarady.size()) {
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+							zarady[number_change_zarad].mass *= 10;
+						else {
+							zarady[number_change_zarad].zarad *= 10;
+							tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+						}
+					}
+				if (event.key.code == Keyboard::LBracket)
+					if (number_change_zarad < zarady.size()) {
+						if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
+							zarady[number_change_zarad].mass *= 0.10;
+						else {
+							zarady[number_change_zarad].zarad *= 0.10;
+							tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+						}
+					}
 			}
 			if (event.type == Event::MouseMoved) {
 				window.setView(interfase_view);
@@ -216,6 +254,14 @@ int main()
 					settings_in_focus = true;
 				else
 					settings_in_focus = false;
+				if (menu_change_button.isMouseOver(window)) {
+					menu_change_button.setBackColor(cl_menu_change_button_focus);
+					menu_change_button_in_focus = true;
+				}
+				else {
+					menu_change_button.setBackColor(cl_menu_change_button);
+					menu_change_button_in_focus = false;
+				}
 				//window.setView(pole_view);
 			}
 
@@ -224,12 +270,15 @@ int main()
 				if (event.mouseButton.button == sf::Mouse::Left) {
 					bool is_not_zarad = true;
 					for (int i = 0; i < zarady.size(); i++) {
-						double r = size_zar * abs(zarady[i].zarad);
+						double r = size_zar*5;
 						IntRect zar_calision(zarady[i].coords.x * convert_P_to_M - r,
 							-zarady[i].coords.y * convert_P_to_M - r, r * 2, r * 2);
 						Vector2i pos_mouse_coord = convert_F_to_I(window.mapPixelToCoords(Mouse::getPosition(window)));
 						if (zar_calision.contains(pos_mouse_coord)) {
-							number_change_zarad = i;
+							if (number_change_zarad != i)
+								number_change_zarad = i;
+							else
+								number_change_zarad = INT_MAX;
 							is_not_zarad = false;
 							break;
 						}
@@ -248,21 +297,45 @@ int main()
 								settings_in_focus = true;
 							else
 								settings_in_focus = false;
+
+
 						}
 						else {
-							position_spot_info = convers_pixel_to_coordsF(window.mapPixelToCoords(Mouse::getPosition(window)),
-								convert_P_to_M);
-							show_spot_inform = !show_spot_inform;
+							if (menu_change_button_in_focus) {
+								menu_change_button.setBackColor(cl_menu_change_button);
+								menu_change_button_in_focus = false;
+								if (menu_change_is_open)
+									menu_change_button.setPosition({ 0,0 });
+								else
+									menu_change_button.setPosition({ menu_change_charge_width, 0 });
+								menu_change_is_open = !menu_change_is_open;
+							}
+							else {
+								position_spot_info = convers_pixel_to_coordsF(window.mapPixelToCoords(Mouse::getPosition(window)),
+									convert_P_to_M);
+								show_spot_inform = !show_spot_inform;
+							}
 						}
 					}
 				}
 			}
 
 			if (event.type == Event::MouseWheelScrolled)
-				if (number_change_zarad < zarady.size()) {
-					zarady[number_change_zarad].zarad += event.mouseWheelScroll.delta * 0.1;
+				if (number_change_zarad < zarady.size())
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+					zarady[number_change_zarad].mass += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].mass);
+				}
+				else{
+					zarady[number_change_zarad].zarad += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].zarad);
 					tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 				}
+		}
+
+		if (charges_anim && clock_charges_move.getElapsedTime().asSeconds() >= time_charges_anim) {
+				global_time += time_charges_anim;
+			clock_charges_move.restart();
+			calculate_new_charges_position(zarady, time_charges_anim);
+			tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 		}
 
 		window.setView(pole_view);
@@ -284,21 +357,32 @@ int main()
 
 		//отрисовка интерфейса
 		fps.update();
-		debug_info(window, TimesNewRoman, pole_view.getCenter(), pole_view.getSize(), fps,
-			number_change_zarad);
+		debug_info(window, Arial, global_time, fps);
 
-		if (settings_in_focus && clock.getElapsedTime().asSeconds() >= 0.05) {
+		if (settings_in_focus && clock_setings_anim.getElapsedTime().asSeconds() >= 0.05) {
 			settings_button.rotate(1);
-			clock.restart();
+			clock_setings_anim.restart();
 		}
 		window.setView(interfase_view);
 		settings_button.drawTo(window);
+		//menu_change_button.drawTo(window);
+		//отрисовка интерфейса зарядов
+		/*if (menu_change_is_open)
+			draw_menu_change_charge(window, zarady);*/
 
 		//
 		if (show_spot_inform)
 			draw_spot_information(window, pole_view, zoom,
 				convert_coords_to_pixelsF(position_spot_info, convert_P_to_M),
 				get_spot_information(position_spot_info, zarady, standart_vies, spot_info_text, prefix), TimesNewRoman);
+
+		
+		if (number_change_zarad < zarady.size()) {
+			draw_spot_information(window, pole_view, zoom,
+				convert_coords_to_pixelsF(zarady[number_change_zarad].coords, convert_P_to_M),
+				get_charge_information(zarady[number_change_zarad], charge_text, standart_vies),
+				TimesNewRoman);
+		}
 
 		// Отрисовка окна
 		window.display();
@@ -315,32 +399,32 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 	Texture texture_exit_selected;
 	if (!texture_exit_selected.loadFromFile("icons/exit.png"))
 	{
-		cout << "error in load exit.png" << endl;
+		wcout << L"error in load exit.png" << endl;
 	}
 	Texture texture_FAQ_selected;
 	if (!texture_FAQ_selected.loadFromFile("icons/FAQ.png"))
 	{
-		cout << "error in load FAQ.png" << endl;
+		wcout << L"error in load FAQ.png" << endl;
 	}
 	Texture texture_exit_dark;
 	if (!texture_exit_dark.loadFromFile("icons/desaturate-exit.png"))
 	{
-		cout << "error in load desaturate-exit.png" << endl;
+		wcout << L"error in load desaturate-exit.png" << endl;
 	}
 	Texture texture_FAQ_dark;
 	if (!texture_FAQ_dark.loadFromFile("icons/desaturate-FAQ.png"))
 	{
-		cout << "error in load desaturate-FAQ.png" << endl;
+		wcout << L"error in load desaturate-FAQ.png" << endl;
 	}
 	Texture texture_exit_light;
 	if (!texture_exit_light.loadFromFile("icons/black-exit.png"))
 	{
-		cout << "error in load black-exit.png" << endl;
+		wcout << L"error in load black-exit.png" << endl;
 	}
 	Texture texture_FAQ_light;
 	if (!texture_FAQ_light.loadFromFile("icons/black-FAQ.png"))
 	{
-		cout << "error in load black-FAQ.png" << endl;
+		wcout << L"error in load black-FAQ.png" << endl;
 	}
 
 
@@ -467,11 +551,13 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 								buttons_title = buttons_title_english;
 								spot_info_text = spot_info_english;
 								prefix = prefix_english;
+								charge_text = charge_en;
 							}
 							else {
 								prefix = prefix_russian;
 								buttons_title = buttons_title_russian;
 								spot_info_text = spot_info_russian;
+								charge_text = charge_ru;
 							}
 							break;
 						default:
@@ -505,8 +591,6 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background_main_window, v
 	}
 }
 
-
-
 void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& act_texture_exit, 
 	Color background, Color text_color, Font &font, bool language_is_english) {
 	bool is_menu_not_closed = true;
@@ -516,7 +600,7 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 	Texture github_texture;
 	if (!github_texture.loadFromFile("icons/github.png"))
 	{
-		cout << "петрович мы обосрались текстура крестика не грузиться" << endl;
+		wcout << L"error in load github.png" << endl;
 	}
 	Button github_button(github_texture, { 150, 150 });
 	github_button.setPosition({ 1000,450 });
@@ -528,11 +612,13 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 	if (!language_is_english)
 		TEXT_FAQ  = TEXT_FAQ + L"\nстрелочки - передвежение по полю\n" + L"S - смена темы\n" + L"pg up, pg down - зум\n" +
 			L"+ (который =) и _ (который -) - изменение маштаба сетки\n" + L"G - включение отключение сетки и привязки (к сетке)\n" +
-			L"Q - добавить заряд (в месте нахождения мышки\n" + L"ЛКМ - информация о точке поля\n";
+			L"Q - добавить заряд (в месте нахождения мышки\n" + L"ЛКМ - информация о точке поля\n" + L"C - очистить экран\n"
+			+ L"L - фиксация заряда \n" + L"D - запуск движения\n" + L"M+колёсико мыши - изменение массы заряда\n" + L"колёсико мыши - изменение заряда\n" + L"[ ] - изменение порядка заряда или массы\n";
 	else
 		TEXT_FAQ = TEXT_FAQ + L"\n arrows - moving across the field\n" + L"S - changing the theme\n" + L"pg up, pg down - zoom\n" +
 			L"+ (which =) and _ (which -) - changing the scale of the grid\n" + L"G - enabling disabling the grid and snapping (to the grid)\n" +
-			L"Q - add a charge (at the location of the mouse\n" + L"LMB - information about the point of the field \n";
+			L"Q - add a charge (at the location of the mouse\n" + L"LMB - information about the point of the field \n" +L"C - clear the screen\n"
+		+ L"L - fixing the charge \n" + L"D - starting the movement\n" + L"M+mouse wheel - changing the mass of the charge\n" + L"mouse wheel - changing the charge\n" + L"[ ] - changing the order of charge or mass \n";
 	wstring TEXT_FAQ_created = L"created by pvh_cherpak\n";
 
 	Text text_created;
@@ -543,7 +629,7 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 	Text txt;
 	txt.setString(TEXT_FAQ);
 	txt.setFont(font);
-	txt.setPosition(100, 100);
+	txt.setPosition(100, 10);
 	txt.setFillColor(text_color);
 	
 	if (github_button.isMouseOver(window))
@@ -586,5 +672,4 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 		window.draw(text_created);
 		window.display();
 	}
-	
 }

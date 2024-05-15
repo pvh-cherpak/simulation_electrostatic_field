@@ -1,8 +1,8 @@
-Package: zlib
-Version: 1.2.13
-Depends: vcpkg-cmake
+Package: libflac
+Version: 1.4.2
+Depends: libogg, vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: a0d07264c8cb3f83690026b3909f726b6d7e5ccddf342f1ce2090ecaf2381a0e
-Description: A compression library
-Status: install ok half-installed
+Abi: 32c014b45384bc6e60bdab167e945013e44fed35d9433a765cf05b9c39895a2b
+Description: Library for manipulating FLAC files
+Status: purge ok half-installed

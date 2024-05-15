@@ -1,7 +1,7 @@
-Package: egl-registry
-Version: 2022-09-20
+Package: freetype
+Feature: zlib
+Depends: zlib
 Architecture: x64-windows
 Multi-Arch: same
-Abi: 69e2518064d8c162e83e0e30c99616d33ef063b9315b45a3117206edda5da39f
-Description: the EGL API and Extension Registry
-Status: install ok half-installed
+Description: Use zlib instead of internal library for DEFLATE
+Status: purge ok not-installed

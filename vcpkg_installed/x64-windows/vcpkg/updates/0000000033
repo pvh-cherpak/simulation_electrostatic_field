@@ -1,7 +1,9 @@
-Package: freetype
-Feature: brotli
-Depends: brotli
+Package: opengl-registry
+Version: 2022-09-29
+Port-Version: 1
+Depends: egl-registry
 Architecture: x64-windows
 Multi-Arch: same
-Description: Support decompression of WOFF2 streams
-Status: install ok half-installed
+Abi: 35258df75a63ab162f491d909902210916fe774ea430ec71e84db0c90e756448
+Description: the API and Extension registries for the OpenGL family APIs
+Status: purge ok not-installed

@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "strukts.h"
+#include "button.h"
 
 using namespace std;
 using namespace sf;
@@ -12,7 +13,11 @@ Color color_marking_grid;
 Color color_line_intensity;
 Color axes_color, axes_text_color;
 Color spot_plate_info_ground_color, spot_plate_info_text_color;
+Color cl_menu_change_button = Color::Green;
+Color cl_menu_change_button_focus = Color::Magenta;
+Color background_menu_change_charge = Color::Black;
 
+float menu_change_charge_width = 200;
 
 void change_color_style(int set, Color &background) {
 	switch (set)
@@ -82,14 +87,14 @@ void draw_zarady(RenderWindow& window, vector <Zarad>& mass, int convert_P_to_M,
 		z_p = mass[i].coords;
 		z_p.x *= convert_P_to_M;
 		z_p.y *= -convert_P_to_M;
-		z_p.x -= size_zar * abs(mass[i].zarad);
-		z_p.y -= size_zar * abs(mass[i].zarad);
+		z_p.x -= size_zar;
+		z_p.y -= size_zar;
 		zarad.setPosition(z_p);
 		if (mass[i].zarad > 0)
 			zarad.setFillColor(Color::Red);
 		else
 			zarad.setFillColor(Color::Blue);
-		double rad = size_zar * abs(mass[i].zarad);
+		double rad = size_zar;
 		zarad.setRadius(rad);
 		window.draw(zarad);
 
@@ -100,20 +105,15 @@ void draw_zarady(RenderWindow& window, vector <Zarad>& mass, int convert_P_to_M,
 	}
 }
 
-void debug_info(RenderWindow& window, Font& font, Vector2f pos_cam, Vector2f size_view, FPS fps,
-	int number_change_zarad) {
+void debug_info(RenderWindow& window, Font& font, double time, FPS fps) {
 	Text debug_info_out;
 	debug_info_out.setFont(font);
 	debug_info_out.setFillColor(Color::Blue);
 
-	string debug_stirng = "X: " + to_string(pos_cam.x)
-		+ "\t" + "Y: " + to_string(-pos_cam.y) + "\n";
-	debug_stirng = debug_stirng + "zoom: " + to_string(window.getSize().x / size_view.x);
-	Vector2f mous = window.mapPixelToCoords(Mouse::getPosition(window));
-	debug_stirng = debug_stirng + "\n" + "pos mouse x: " + to_string(mous.x) +
-		" y: " + to_string(-mous.y);
+	string debug_stirng;
+
 	debug_stirng = debug_stirng + "\n" + "FPS: " + to_string(fps.getFPS());
-	debug_stirng = debug_stirng + "\n" + "vydelyny zarad: " + to_string(number_change_zarad);
+	debug_stirng = debug_stirng + "\n" + "Time: " + to_string(time) + L"seconds";
 	debug_info_out.setString(debug_stirng);
 	debug_info_out.setPosition(0, 0);
 
@@ -444,11 +444,13 @@ void draw_spot_information(RenderWindow& window, View view,
 	window.draw(text);
 }
 
-void draw_segment(vector <Zarad>& segment_vertex, RenderWindow& window,
-	Color segment_color, int ,double convert_P_to_M) {
-	VertexArray segments(Quads, segment_vertex.size() * 2);
-	
-	for (int i = 1; i < segment_vertex.size(); i++) {
-		
-	}
+
+void draw_menu_change_charge(RenderWindow& window, vector <Zarad>& segment_vertex/*, vector <Button> btn,
+	int charge_in_focus, int page_list_charge, vector <wstring> text*/){
+	RectangleShape background({ menu_change_charge_width ,(float)(VideoMode::getDesktopMode().height / 1.6) });
+	background.setFillColor(background_menu_change_charge);
+
+
+
+	window.draw(background);
 }

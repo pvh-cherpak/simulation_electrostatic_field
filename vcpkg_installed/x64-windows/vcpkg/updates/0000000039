@@ -1,7 +1,9 @@
-Package: freetype
-Feature: bzip2
-Depends: bzip2
+Package: fmt
+Version: 9.1.0
+Port-Version: 1
+Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Description: Support bzip2 compressed fonts.
-Status: install ok installed
+Abi: dfffe6acacf2feae942c2b0f95d183a5449146c628133d578b6810ada3bac15e
+Description: Formatting library for C++. It can be used as a safe alternative to printf or as a fast alternative to IOStreams.
+Status: purge ok not-installed

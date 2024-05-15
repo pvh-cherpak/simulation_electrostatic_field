@@ -12,8 +12,12 @@ struct point
 
 struct Zarad
 {
-	Vector2f coords;
-	double zarad ;
+	Vector2f coords = { 0,0 };
+	double zarad = 1e-5;
+	bool is_locked = false;
+	Vector2f speed = { 0, 0};
+	Vector2f acceleration = { 0 , 0};
+	double mass = 1;
 };
 
 class FPS
@@ -70,3 +74,7 @@ vector <wstring> prefix_english = { L"pico", L"nano", L"micro", L"milli",L"",L"k
 vector <wstring> prefix_russian = { L"пико", L"нано", L"микро", L"мили",L"",L"кило",L"мега",L"гига",L"тера" };
 
 vector <vector < vector<wstring>>> buttons_title;
+
+vector <wstring> charge_ru = { L"Заряд: " , L"Кулон", L"Вес: ", L"Кг", L"состояние заряда: ", L"зафиксирован", L"свободен", L"модуль скорости: ", L"М/с"};
+vector <wstring> charge_en = { L"Charge: " , L"Columb", L"Weight: ", L"Kg", L"state of charge: ", L"fixed", L"free", L"velocity modulus: ", L"M/s" };
+vector <wstring> charge_text;

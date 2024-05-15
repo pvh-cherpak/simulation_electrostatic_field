@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/libvorbis-x64-windows-1.3.7#2-048a4513-aaac-4783-84ae-7c3a2e766efb",
-  "name": "libvorbis:x64-windows@1.3.7#2 aac1036703e366f97107cc7662c47bae5769572a615287f83e35c8b4a308f67d",
+  "documentNamespace": "https://spdx.org/spdxdocs/libvorbis-x64-windows-1.3.7#2-8c9cd0a1-b388-423e-9ba7-6793d2671499",
+  "name": "libvorbis:x64-windows@1.3.7#2 f6614578b49dec881735666eb453cd2b8d54c134a1e37d8aa4952417b9bf65f1",
   "creationInfo": {
     "creators": [
-      "Tool: vcpkg-8a83681f921b10d86ae626fd833c253f4f8c355b"
+      "Tool: vcpkg-d6945642ee5c3076addd1a42c331bbf4cfc97457"
     ],
-    "created": "2024-02-16T17:32:59Z"
+    "created": "2024-05-14T08:50:43Z"
   },
   "relationships": [
     {
@@ -99,7 +99,7 @@
     {
       "name": "libvorbis:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "aac1036703e366f97107cc7662c47bae5769572a615287f83e35c8b4a308f67d",
+      "versionInfo": "f6614578b49dec881735666eb453cd2b8d54c134a1e37d8aa4952417b9bf65f1",
       "downloadLocation": "NONE",
       "licenseConcluded": "BSD-3-Clause",
       "licenseDeclared": "NOASSERTION",

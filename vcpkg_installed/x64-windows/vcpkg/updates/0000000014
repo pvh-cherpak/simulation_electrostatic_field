@@ -1,8 +1,10 @@
-Package: openal-soft
-Version: 1.23.0
+Package: bzip2
+Version: 1.0.8
+Port-Version: 3
 Depends: vcpkg-cmake, vcpkg-cmake-config
 Architecture: x64-windows
 Multi-Arch: same
-Abi: efdffa5e623307c46b0522ab231de070e153ca379bc96076db2dd0e2c2c26787
-Description: OpenAL Soft is an LGPL-licensed, cross-platform, software implementation of the OpenAL 3D audio API.
-Status: install ok half-installed
+Abi: 35d4d4ced9e4a0e0fd7f5593046a5973b01c65b5603da24dbe4606a6b87abab2
+Description: bzip2 is a freely available, patent free, high-quality data compressor. It typically compresses files to within 10% to 15% of the best available techniques (the PPM family of statistical compressors), whilst being around twice as fast at compression and six times faster at decompression.
+Default-Features: tool
+Status: purge ok half-installed

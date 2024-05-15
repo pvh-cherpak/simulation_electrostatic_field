@@ -3,13 +3,13 @@
   "spdxVersion": "SPDX-2.2",
   "dataLicense": "CC0-1.0",
   "SPDXID": "SPDXRef-DOCUMENT",
-  "documentNamespace": "https://spdx.org/spdxdocs/libflac-x64-windows-1.4.2-0a2e76b6-ed26-4474-9839-56119198c0ef",
-  "name": "libflac:x64-windows@1.4.2 32c014b45384bc6e60bdab167e945013e44fed35d9433a765cf05b9c39895a2b",
+  "documentNamespace": "https://spdx.org/spdxdocs/libflac-x64-windows-1.4.2-c2e9053f-ebf1-4cdf-800e-fc3f1f07b706",
+  "name": "libflac:x64-windows@1.4.2 acfd2721a880593abf8e50d7df384cb40c3911b3b05a86d3ec97eb911e265363",
   "creationInfo": {
     "creators": [
-      "Tool: vcpkg-8a83681f921b10d86ae626fd833c253f4f8c355b"
+      "Tool: vcpkg-d6945642ee5c3076addd1a42c331bbf4cfc97457"
     ],
-    "created": "2024-02-16T17:33:27Z"
+    "created": "2024-05-14T08:51:06Z"
   },
   "relationships": [
     {
@@ -89,7 +89,7 @@
     {
       "name": "libflac:x64-windows",
       "SPDXID": "SPDXRef-binary",
-      "versionInfo": "32c014b45384bc6e60bdab167e945013e44fed35d9433a765cf05b9c39895a2b",
+      "versionInfo": "acfd2721a880593abf8e50d7df384cb40c3911b3b05a86d3ec97eb911e265363",
       "downloadLocation": "NONE",
       "licenseConcluded": "BSD-3-Clause",
       "licenseDeclared": "NOASSERTION",

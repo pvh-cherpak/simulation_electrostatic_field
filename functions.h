@@ -23,6 +23,16 @@ Vector2f convert_point_to_coordsF(point p, int convert_P_to_M) {
 	return ans;
 }
 
+Vector2f convert_point_to_coordsF_correct(point p, int convert_P_to_M) {
+	Vector2f ans;
+	//функция работает не правильно она не учитывает инвертацию оси Y
+	// при пернводи из декартовых(метровые) в оконные координаты(пиксельные)
+	ans.x = p.x * convert_P_to_M;
+	ans.y = p.y * -convert_P_to_M;
+	return ans;
+}
+
+
 Vector2f convert_coords_to_pixelsF(Vector2f p, int convert_P_to_M) {
 	Vector2f ans;
 	ans.x = p.x * convert_P_to_M;
@@ -64,7 +74,6 @@ Zarad add_zarad(Vector2f coords, int convert_P_to_M,
 		z.coords = get_grid_linked_positionF(p, step_grid_M);
 	else
 		z.coords = p;
-	z.zarad = 1;
 	return z;
 }
 
@@ -89,8 +98,8 @@ vector <Vector2f> calculation_tension_line(Vector2f act_point, bool zar_is_negat
 		for (int j = 0; j < mass.size(); j++) {
 			double delta_x = mass[j].coords.x - act_point.x;
 			double delta_y = mass[j].coords.y - act_point.y;
-			double r = sqrt(delta_y * delta_y + delta_x * delta_x);
-			double modul = mass[j].zarad / (r * r);
+			double r = delta_y * delta_y + delta_x * delta_x;
+			double modul = mass[j].zarad / r ;
 
 			Vector2f P_p = vector_projection(modul, act_point, mass[j].coords);
 			proje.x += P_p.x;
@@ -122,7 +131,24 @@ vector <vector <Vector2f>> get_new_tensor_line_cadr(vector <Zarad> &zarady) {
 	return line_cadr;
 }
 
-string get_readable_numbers(double number, bool standard_view, int precis,vector <wstring> &prefix ) {
+double get_pow_number(double number) {
+	double power = 1;
+	if (abs(number) < 1) {
+			while (abs(number) * 10 < 10) {
+				number *= 10;
+				power*=0.1;
+			}
+	}
+	else {
+			while (abs(number) / 10 > 1) {
+				number /= 10;
+				power *=10;
+			}
+	}
+	return power;
+}
+
+wstring get_readable_numbers(double number, bool standard_view, int precis,vector <wstring> &prefix) {
 	int count_digit = 0;
 	if (abs(number) < 1) {
 		if (!standard_view)
@@ -148,27 +174,28 @@ string get_readable_numbers(double number, bool standard_view, int precis,vector
 				count_digit++;
 			}
 	}
+
 	for (int i = 0; i < precis; i++)
 		number *= 10;
 	number = round(number);
 	for (int i = 0; i < precis; i++)
 		number /= 10;
 
-	string ans = to_string(number);
+	wstring ans = to_wstring(number);
 
 	if (standard_view) {
 		if (number < 0)
 			ans.erase(3 + precis);
 		else
 			ans.erase(2 + precis);
-		ans = ans + "*10^(" + to_string(count_digit) + ") ";
+		ans = ans + L"*10^(" + to_string(count_digit) + ") ";
 	}
 	else {
 		if (number < 0)
 			ans.erase(5 + precis);
 		else
 			ans.erase(4 + precis);
-		ans = ans + " " + prefix[4 + count_digit / 3];
+		ans = ans + L" " + prefix[4 + count_digit / 3];
 	}
 	return ans;
 }
@@ -199,3 +226,54 @@ wstring get_spot_information(Vector2f coords, vector <Zarad>& zarady, bool stand
 
 vector <wstring> spot_info_text;
 vector <wstring> prefix;
+
+void calculate_new_charges_position(vector <Zarad>& zarady, double time_charges_anim) {
+	for (double i = 0; i < zarady.size(); i ++) {
+		if (zarady[i].is_locked)
+			continue;
+		Vector2f proje;
+		for (int j = 0; j < zarady.size(); j++) {
+			if (i == j)
+				continue;
+			double delta_x = zarady[j].coords.x - zarady[i].coords.x;
+			double delta_y = zarady[j].coords.y - zarady[i].coords.y;
+			double r = delta_y * delta_y + delta_x * delta_x;
+			double modul = zarady[j].zarad* zarady[i].zarad * 9e9 / (r * r);
+
+			Vector2f P_p = vector_projection(modul, zarady[i].coords, zarady[j].coords);
+			proje.x += P_p.x;
+			proje.y += P_p.y;
+		}
+		/*if (zarady[i]*zarady[j]) {
+			proje.x = -proje.x;
+			proje.y = -proje.y;
+		}*/
+		zarady[i].acceleration.x += proje.x / zarady[i].mass;
+		zarady[i].acceleration.y +=	proje.y / zarady[i].mass;
+
+		zarady[i].coords.x += zarady[i].speed.x * time_charges_anim + zarady[i].acceleration.x * time_charges_anim
+			* time_charges_anim / 2;
+		zarady[i].coords.y += zarady[i].speed.y * time_charges_anim + zarady[i].acceleration.y * time_charges_anim
+			* time_charges_anim / 2;
+
+		zarady[i].speed.x += zarady[i].acceleration.x * time_charges_anim;
+		zarady[i].speed.y += zarady[i].acceleration.y * time_charges_anim;
+	}
+
+	
+}
+
+wstring get_charge_information(Zarad& charge, vector <wstring>& charge_text, bool standart_vies) {
+	wstring str = charge_text[0] + get_readable_numbers(charge.zarad, standart_vies, 3, prefix) + charge_text[1] + "\n";
+	str = str + charge_text[2] + get_readable_numbers(charge.mass, standart_vies, 3, prefix) + charge_text[3] + "\n";
+	str = str + charge_text[4];
+	if (charge.is_locked)
+		str = str + charge_text [5] + "\n";
+	else
+		str = str + charge_text[6] + "\n";
+
+	double speed = sqrt(charge.speed.x * charge.speed.x + charge.speed.y * charge.speed.y);
+	str = str + charge_text[7] + get_readable_numbers(speed, standart_vies, 3, prefix) + charge_text[8];
+
+	return str;
+}
