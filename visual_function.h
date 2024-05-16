@@ -97,17 +97,23 @@ void draw_zarady(RenderWindow& window, vector <Zarad>& mass, int convert_P_to_M,
 		z_p = mass[i].coords;
 		z_p.x *= convert_P_to_M;
 		z_p.y *= -convert_P_to_M;
-		z_p.x -= size_zar;
-		z_p.y -= size_zar;
 		zarad.setPosition(z_p);
+		double rad = size_zar;
+		
+		zarad.setRadius(rad + 5);
+		zarad.setOrigin(rad + 5, rad+5);
+		
+		zarad.setFillColor(Color::Black);
+		window.draw(zarad);
+
 		if (mass[i].zarad > 0)
 			zarad.setFillColor(Color::Red);
 		else
 			zarad.setFillColor(Color::Blue);
-		double rad = size_zar;
+		
 		zarad.setRadius(rad);
+		zarad.setOrigin(rad, rad);
 		window.draw(zarad);
-
 		//RectangleShape rec(Vector2f(rad*2, rad*2));
 		//rec.setPosition(z_p);
 		//rec.setFillColor(Color::Green);

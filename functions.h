@@ -238,7 +238,8 @@ void calculate_new_charges_position(vector <Zarad>& zarady, double time_charges_
 			double delta_x = zarady[j].coords.x - zarady[i].coords.x;
 			double delta_y = zarady[j].coords.y - zarady[i].coords.y;
 			double r = delta_y * delta_y + delta_x * delta_x;
-			double modul = zarady[j].zarad* zarady[i].zarad * 9e9 / (r * r);
+			double modul;
+			modul = zarady[j].zarad * zarady[i].zarad * 9e9 / r;
 
 			Vector2f P_p = vector_projection(modul, zarady[i].coords, zarady[j].coords);
 			proje.x += P_p.x;
@@ -269,7 +270,7 @@ void collision_of_charges(vector <Zarad>& zarady) {
 			double delta_x = zarady[j].coords.x - zarady[i].coords.x;
 			double delta_y = zarady[j].coords.y - zarady[i].coords.y;
 			double r = delta_y * delta_y + delta_x * delta_x;
-			if (r < 0.22) {
+			if (r < 0.2) {
 				zarady[j].speed.x = -zarady[j].speed.x;
 				zarady[i].speed.x = -zarady[i].speed.x;
 				zarady[j].speed.y = -zarady[j].speed.y;

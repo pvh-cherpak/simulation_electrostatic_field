@@ -200,6 +200,8 @@ int main()
 					pole_view.setCenter(0, 0);
 					zarady.clear();
 					global_time = 0;
+					zoom = 1;
+					
 				}
 				if (event.key.code == Keyboard::L) {
 					if (number_change_zarad < zarady.size()) 
