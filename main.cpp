@@ -20,12 +20,12 @@ void GUI_menu(RenderWindow& window, Font& font, Color& background, vector <int>&
 void FAQ_list(RenderWindow& window, Texture& texture_exit_selected, Texture& act_texture_exit , Color background,
 	 Color text_color, Font& font, bool language_is_english);
 
+
 int main()
 {
-	
-	_setmode(_fileno(stdout), _O_U16TEXT);
+	/*_setmode(_fileno(stdout), _O_U16TEXT);
 	_setmode(_fileno(stdin), _O_U16TEXT);
-	_setmode(_fileno(stderr), _O_U16TEXT);
+	_setmode(_fileno(stderr), _O_U16TEXT);*/
 
 	ContextSettings settings;
 	settings.antialiasingLevel = 8;
@@ -35,11 +35,13 @@ int main()
 	pole_view.setCenter(0, 0);
 	View interfase_view = window.getDefaultView();
 
-	/*Shader field_intensity;
-	if (!field_intensity.loadFromFile("field_intensity.vert", sf::Shader::Fragment))
+	Shader field_intensity;
+	if (!field_intensity.loadFromFile("field_intensity.frag", sf::Shader::Fragment))
 	{
 		wcout << L"error in load shader field_intensity" << endl;
-	}*/
+	}
+
+	RectangleShape background_field_intensity(pole_view.getSize());
 
 	Font TimesNewRoman;
 	if (!TimesNewRoman.loadFromFile("fonts/TimesNewROman.ttf"))
@@ -85,6 +87,7 @@ int main()
 	bool menu_change_button_in_focus = false;
 	bool menu_change_is_open = false;
 	bool charges_anim = false;
+	bool field_intensyty_line = true;
 
 
 	ifstream fin("settings.txt");
@@ -101,11 +104,12 @@ int main()
  
 	//объявление всяких конвертирующих коэффициентов
 	double step_grid_M = 0.5;//шаг сетки в метрах
-	double zoom = 1;
+	
 	int convert_P_to_M = 100;
 	double size_zar = 10;
 	int number_change_zarad = 0;
 	Vector2f position_spot_info = { 0,0 };
+	double contrast = 0.000001;
 
 	if (language_is_english) {
 		buttons_title = buttons_title_english;
@@ -128,7 +132,7 @@ int main()
 	Clock clock_charges_move;
 	double time_charges_anim = 0.05;
 	double global_time = 0;
-
+	field_intensity.setUniform("maximum_intensity", (float)0.001);
 	// Главный цикл приложения. Выполняется, пока открыто окно
 	while (window.isOpen())
 	{
@@ -179,16 +183,21 @@ int main()
 			}
 
 			if (event.type == Event::KeyReleased) {
+				if (event.key.code == Keyboard::E) {
+					wcout << field_intensyty_line << endl;
+				}
 				if (event.key.code == Keyboard::Q) {
 					number_change_zarad = zarady.size();
 					zarady.push_back(add_zarad(window.mapPixelToCoords(Mouse::getPosition(window)),
 						convert_P_to_M, step_grid_M, show_marking_grid));
+					if (field_intensyty_line)
 					tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 				}
 				if (event.key.code == Keyboard::D) {
 					charges_anim = !charges_anim;
 				}
 				if (event.key.code == Keyboard::C) {
+					pole_view.setCenter(0, 0);
 					zarady.clear();
 					global_time = 0;
 				}
@@ -200,6 +209,7 @@ int main()
 					if (number_change_zarad < zarady.size()) {
 						zarady.erase(zarady.begin() + number_change_zarad);
 						number_change_zarad = zarady.size();
+						if (field_intensyty_line)
 						tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 					}
 				if (event.key.code == Keyboard::G) {
@@ -212,38 +222,41 @@ int main()
 					step_grid_M -= 0.1 * (step_grid_M > 0.1);
 				}
 				if (event.key.code == Keyboard::Escape) {
-					vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
+					vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english, (int)field_intensyty_line };
 					GUI_menu(window, Arial, background, changed_falgs);
 					number_color_style = changed_falgs[0];
 					standart_vies = changed_falgs[1];
 					show_marking_grid = changed_falgs[2];
 					language_is_english = changed_falgs[3];
+					field_intensyty_line = changed_falgs[4];
 					change_color_style(number_color_style, background);
+					if (field_intensyty_line)
+						tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 				}
-				if (event.key.code == Keyboard::S) {
-					number_color_style++;
-					if (number_color_style > 1)
-						number_color_style = 0;
-					change_color_style(number_color_style, background);
-				}
-				if (event.key.code == Keyboard::V)
-					standart_vies = !standart_vies;
 
 				if (event.key.code == Keyboard::RBracket)
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+						contrast *= 1.2;
+					else
 					if (number_change_zarad < zarady.size()) {
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 							zarady[number_change_zarad].mass *= 10;
 						else {
 							zarady[number_change_zarad].zarad *= 10;
+							if (field_intensyty_line)
 							tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 						}
 					}
 				if (event.key.code == Keyboard::LBracket)
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::N))
+						contrast *= 0.8;
+					else
 					if (number_change_zarad < zarady.size()) {
 						if (sf::Keyboard::isKeyPressed(sf::Keyboard::M))
 							zarady[number_change_zarad].mass *= 0.10;
 						else {
 							zarady[number_change_zarad].zarad *= 0.10;
+							if (field_intensyty_line)
 							tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 						}
 					}
@@ -285,12 +298,17 @@ int main()
 					}
 					if (is_not_zarad) {
 						if (settings_in_focus) {
-							vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english };
-							GUI_menu(window, Sans, background, changed_falgs);
+							vector <int> changed_falgs = { number_color_style , (int)standart_vies , (int)show_marking_grid, (int)language_is_english, (int)field_intensyty_line };
+							GUI_menu(window, Arial, background, changed_falgs);
 							number_color_style = changed_falgs[0];
 							standart_vies = changed_falgs[1];
 							show_marking_grid = changed_falgs[2];
 							language_is_english = changed_falgs[3];
+							field_intensyty_line = changed_falgs[4];
+							change_color_style(number_color_style, background);
+							if (field_intensyty_line)
+								tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+							
 
 							window.setView(interfase_view);
 							if (settings_button.isMouseOver(window))
@@ -321,21 +339,44 @@ int main()
 			}
 
 			if (event.type == Event::MouseWheelScrolled)
-				if (number_change_zarad < zarady.size())
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
-					zarady[number_change_zarad].mass += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].mass);
-				}
-				else{
-					zarady[number_change_zarad].zarad += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].zarad);
-					tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+				if (number_change_zarad < zarady.size()) {
+					if (sf::Keyboard::isKeyPressed(sf::Keyboard::M)) {
+						zarady[number_change_zarad].mass += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].mass);
+					}
+					else {
+						zarady[number_change_zarad].zarad += event.mouseWheelScroll.delta * get_pow_number(zarady[number_change_zarad].zarad);
+						if (field_intensyty_line)
+						tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+					}
 				}
 		}
+		if (number_color_style == 2) {
+			for (int i = 0; i < zarady.size(); ++i) {
+				field_intensity.setUniform("charge[" + std::to_string(i) + "].position", zarady[i].coords);
+				field_intensity.setUniform("charge[" + std::to_string(i) + "].charge", (float)zarady[i].zarad);
+			}
+			field_intensity.setUniform("charge_size", (int)zarady.size());
+			field_intensity.setUniform("convert_P_to_M", (float)(convert_P_to_M / zoom));
+
+			field_intensity.setUniform("max_intensyty", (float)contrast);
+			//field_intensity.setUniform("min_intensyty", (float)-0.0001);
+
+			field_intensity.setUniform("x_offset", (float)pole_view.getCenter().x - pole_view.getSize().x / 2);
+			field_intensity.setUniform("y_offset", -(float)(pole_view.getCenter().y + pole_view.getSize().y / 2));
+
+			window.setView(interfase_view);
+			window.draw(background_field_intensity, &field_intensity);
+		}
+
+		//background_texture_intermediate;
 
 		if (charges_anim && clock_charges_move.getElapsedTime().asSeconds() >= time_charges_anim) {
 				global_time += time_charges_anim;
 			clock_charges_move.restart();
 			calculate_new_charges_position(zarady, time_charges_anim);
-			tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
+			collision_of_charges(zarady);
+			if (field_intensyty_line)
+				tensor_line_cadr_points = get_new_tensor_line_cadr(zarady);
 		}
 
 		window.setView(pole_view);
@@ -348,6 +389,7 @@ int main()
 		window.setView(pole_view);
 
 		//отрисовка линий напряжённости
+		if (field_intensyty_line)
 		for (int i = 0; i < tensor_line_cadr_points.size(); i++)
 			draw_line(window, tensor_line_cadr_points[i],
 				2, convert_P_to_M, zoom);
@@ -610,15 +652,15 @@ void FAQ_list(RenderWindow& window, Texture & texture_exit_selected, Texture& ac
 
 	wstring TEXT_FAQ = L"This FAQ\n";
 	if (!language_is_english)
-		TEXT_FAQ  = TEXT_FAQ + L"\nстрелочки - передвежение по полю\n" + L"S - смена темы\n" + L"pg up, pg down - зум\n" +
-			L"+ (который =) и _ (который -) - изменение маштаба сетки\n" + L"G - включение отключение сетки и привязки (к сетке)\n" +
+		TEXT_FAQ  = TEXT_FAQ +L"НЕ ИСПОЛЬЗОВАТЬ ЗУМ в ТЕМЕ НАПРЯЖённость поля\n" + L"\nстрелочки - передвежение по полю\n" + L"N и [ ] - изминение контраста\n" + L"pg up, pg down - зум\n" +
+			L"+ (который =) и _ (который -) - изменение маштаба сетки\n" + L"M - модификатор для работты с массой\n" +
 			L"Q - добавить заряд (в месте нахождения мышки\n" + L"ЛКМ - информация о точке поля\n" + L"C - очистить экран\n"
-			+ L"L - фиксация заряда \n" + L"D - запуск движения\n" + L"M+колёсико мыши - изменение массы заряда\n" + L"колёсико мыши - изменение заряда\n" + L"[ ] - изменение порядка заряда или массы\n";
+			+ L"L - фиксация заряда \n" + L"D - запуск движения\n" + L"колёсико мыши - изменение пораметра (заряд по умолчанию)\n" + L"[ ] - изменение порядка (заряд по умолчанию)\n";
 	else
-		TEXT_FAQ = TEXT_FAQ + L"\n arrows - moving across the field\n" + L"S - changing the theme\n" + L"pg up, pg down - zoom\n" +
-			L"+ (which =) and _ (which -) - changing the scale of the grid\n" + L"G - enabling disabling the grid and snapping (to the grid)\n" +
+		TEXT_FAQ = TEXT_FAQ + L"DO NOT USE ZOOM in THE field intensity theme\n" + L"\n arrows - moving across the field\n" + L"N and [ ] - contrast change \n" + L"pg up, pg down - zoom\n" +
+			L"+ (which =) and _ (which -) - changing the scale of the grid\n" + L"M - is a modifier for working with mass\n" +
 			L"Q - add a charge (at the location of the mouse\n" + L"LMB - information about the point of the field \n" +L"C - clear the screen\n"
-		+ L"L - fixing the charge \n" + L"D - starting the movement\n" + L"M+mouse wheel - changing the mass of the charge\n" + L"mouse wheel - changing the charge\n" + L"[ ] - changing the order of charge or mass \n";
+		+ L"L - fixing the charge \n" + L"D - starting the movement\n" + L"mouse wheel - parameter change (default charge)\n" + L"[ ] - changing the order(default charge)\n";
 	wstring TEXT_FAQ_created = L"created by pvh_cherpak\n";
 
 	Text text_created;

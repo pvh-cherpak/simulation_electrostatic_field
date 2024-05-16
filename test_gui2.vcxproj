@@ -159,7 +159,7 @@
     <Font Include="fonts\TimesNewRoman.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="field_intensity.vert" />
+    <None Include="field_intensity.frag" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

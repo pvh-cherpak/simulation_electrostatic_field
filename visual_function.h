@@ -40,6 +40,16 @@ void change_color_style(int set, Color &background) {
 		spot_plate_info_ground_color = { 80,169,236 }; 
 		spot_plate_info_text_color = Color::Green;
 		break;
+	case 2: // intensyv_mode
+		background = Color::Black;
+		color_marking_grid = Color::White;
+		color_line_intensity = Color::White;
+		axes_color = { 70,70,70 };
+		axes_text_color = Color::White;
+		spot_plate_info_ground_color = { 80,169,236 };
+		spot_plate_info_text_color = Color::Green;
+		zoom = 1;
+		break;
 	default:
 		break;
 	}
@@ -108,7 +118,7 @@ void draw_zarady(RenderWindow& window, vector <Zarad>& mass, int convert_P_to_M,
 void debug_info(RenderWindow& window, Font& font, double time, FPS fps) {
 	Text debug_info_out;
 	debug_info_out.setFont(font);
-	debug_info_out.setFillColor(Color::Blue);
+	debug_info_out.setFillColor(spot_plate_info_text_color);
 
 	string debug_stirng;
 
@@ -449,8 +459,5 @@ void draw_menu_change_charge(RenderWindow& window, vector <Zarad>& segment_verte
 	int charge_in_focus, int page_list_charge, vector <wstring> text*/){
 	RectangleShape background({ menu_change_charge_width ,(float)(VideoMode::getDesktopMode().height / 1.6) });
 	background.setFillColor(background_menu_change_charge);
-
-
-
 	window.draw(background);
 }

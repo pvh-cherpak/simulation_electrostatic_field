@@ -45,19 +45,21 @@ public:
 		++mFrame;
 	}
 };
-
+double zoom = 1;
 vector <vector < vector<wstring>>> buttons_title_english = {
-	{{L"Theme:"}, {L"light",L"dark"}},
+	{{L"Theme:"}, {L"light",L"dark",L"field\nintensity"}},
 	{{L"number format:"}, {L"International\nSystem\nof Units", L"scientific\nformat"}},
 	{{L"marking grid"},{L"hide", L"display.\nbinding\nis enabled"}},
-	{{L"language: "}, {L"russian",L"english"}}
+	{{L"language: "}, {L"russian",L"english"}},
+	{{L"field intensyty line"},{L"hide", L"show"}}
 };
 
 vector <vector < vector<wstring>>> buttons_title_russian = {
-	{{L"Тема:"}, {L"светлая",L"тёмная"}},
+	{{L"Тема:"}, {L"светлая",L"тёмная",L"напряжённость\nполя"}},
 	{{L"представление числа:"}, {L"Система\nСИ", L"научное\nпредставление"}},
 	{{L"Оси координат"},{L"скрыты", L"отображать.\nпривязка к сетке\nвключена"}},
-	{{L"Язык: "}, {L"русский", L"английский"}}
+	{{L"Язык: "}, {L"русский", L"английский"}},
+	{{L"линии напряжённсоти"},{L"скрыты",L"отображаются"}}
 };
 
 vector <wstring> spot_info_english = {

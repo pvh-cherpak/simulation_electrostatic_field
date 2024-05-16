@@ -228,7 +228,7 @@ vector <wstring> spot_info_text;
 vector <wstring> prefix;
 
 void calculate_new_charges_position(vector <Zarad>& zarady, double time_charges_anim) {
-	for (double i = 0; i < zarady.size(); i ++) {
+	for (int i = 0; i < zarady.size(); i ++) {
 		if (zarady[i].is_locked)
 			continue;
 		Vector2f proje;
@@ -248,8 +248,8 @@ void calculate_new_charges_position(vector <Zarad>& zarady, double time_charges_
 			proje.x = -proje.x;
 			proje.y = -proje.y;
 		}*/
-		zarady[i].acceleration.x += proje.x / zarady[i].mass;
-		zarady[i].acceleration.y +=	proje.y / zarady[i].mass;
+		zarady[i].acceleration.x = proje.x / zarady[i].mass;
+		zarady[i].acceleration.y = proje.y / zarady[i].mass;
 
 		zarady[i].coords.x += zarady[i].speed.x * time_charges_anim + zarady[i].acceleration.x * time_charges_anim
 			* time_charges_anim / 2;
@@ -261,6 +261,21 @@ void calculate_new_charges_position(vector <Zarad>& zarady, double time_charges_
 	}
 
 	
+}
+
+void collision_of_charges(vector <Zarad>& zarady) {
+	for (int i = 0; i < zarady.size(); i++)
+		for (int j = i + 1; j < zarady.size(); j++) {
+			double delta_x = zarady[j].coords.x - zarady[i].coords.x;
+			double delta_y = zarady[j].coords.y - zarady[i].coords.y;
+			double r = delta_y * delta_y + delta_x * delta_x;
+			if (r < 0.22) {
+				zarady[j].speed.x = -zarady[j].speed.x;
+				zarady[i].speed.x = -zarady[i].speed.x;
+				zarady[j].speed.y = -zarady[j].speed.y;
+				zarady[i].speed.y = -zarady[i].speed.y;
+			}
+		}	
 }
 
 wstring get_charge_information(Zarad& charge, vector <wstring>& charge_text, bool standart_vies) {

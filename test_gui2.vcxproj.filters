@@ -77,7 +77,7 @@
     <Font Include="fonts\TimesNewRoman.ttf" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="field_intensity.vert">
+    <None Include="field_intensity.frag">
       <Filter>Исходные файлы</Filter>
     </None>
   </ItemGroup>
